@@ -14,28 +14,11 @@ public class ServerApp {
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 
-            Calculation calculation = new Calculation();
+            ParserModel parserModel = new ParserModel();
 
             while (true){
                 String clientRequest = dataInputStream.readUTF();
-                String[] pars = clientRequest.split(" "); // сплитуем выражение, получаем массив стрингов
-                for (int i = 0; i < pars.length; i++) {  // проходимся по массиву, ищем операцию и производим действия
-                    if(pars[i].equals("*")){
-                        dataOutputStream.writeUTF(calculation.mult(Integer.parseInt(pars[i - 1]), Integer.parseInt(pars[i + 1])));
-                    }
-                    else if (pars[i].equals("/")){
-                        dataOutputStream.writeUTF(calculation.div(Integer.parseInt(pars[i - 1]), Integer.parseInt(pars[i + 1])));
-                    }
-                    else if (pars[i].equals("+")) {
-                        dataOutputStream.writeUTF(calculation.sum(Integer.parseInt(pars[i - 1]), Integer.parseInt(pars[i + 1])));
-                    }
-                    else if (pars[i].equals("-")){
-                        dataOutputStream.writeUTF(calculation.sub(Integer.parseInt(pars[i - 1]), Integer.parseInt(pars[i + 1])));
-                    }
-                    else {
-                        dataOutputStream.writeUTF("Введены некорректные данные");
-                    }
-                }
+                dataOutputStream.writeUTF(parserModel.parserEquation(clientRequest));
                 if (clientRequest.equals("end")) break;
             }
         } catch (IOException e) {
